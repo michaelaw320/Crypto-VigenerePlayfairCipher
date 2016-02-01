@@ -34,16 +34,25 @@ int main(int argc, char **argv) {
 	if(stricmp(parser.INPUT_FILE, "stdin") == 0) {
 		utils.readFromStdin();
 	} else {
-		utils.readFromFile(parser.INPUT_FILE, parser.BINARY_MODE);
+		try {
+			utils.readFromFile(parser.INPUT_FILE, parser.BINARY_MODE);
+		} catch (char const* e) {
+			cerr << e << endl;
+			return 1;
+		}
 	}
 	//Choose cipher and do encrypt/decrypt
-	cout << utils.getInputData() << endl;
 	//Output data
 	utils.setOutputData(utils.getInputData());
 	if(stricmp(parser.OUTPUT_FILE, "stdout") == 0) {
 		utils.outputStdout();
 	} else {
-		utils.outputFile(parser.OUTPUT_FILE, parser.BINARY_MODE);
+		try {
+			utils.outputFile(parser.OUTPUT_FILE, parser.BINARY_MODE);
+		} catch (char const* e) {
+			cerr << e << endl;
+			return 1;
+		}
 	}
 
 	return 0;

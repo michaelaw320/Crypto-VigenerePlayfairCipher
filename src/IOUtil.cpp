@@ -53,17 +53,29 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 			inputFile.seekg(0, ios::beg);
 			inputFile.read(inputData, size);
 			inputFile.close();
-			cout << inputLen << endl;
 		} else {
-			throw "Cannot open file!";
+			throw "Cannot open input file!";
 		}
 	} else {
-		inputFile.open(filename, ios::in);
+		inputFile.open(filename, ios::in|ios::ate);
 		if (inputFile.is_open()) {
-			cout << "not implemented yet" << endl;
+			streampos size;
+			size = inputFile.tellg();
+			inputData = new char[size];
+			inputLen = size;
+			cout << size << endl << endl;
+			inputFile.seekg(0, ios::beg);
+			inputFile.get(inputData, size, '\0');
 			inputFile.close();
+			int n = 0;
+			char ch = inputData[n];
+			while (ch != '\0') {
+				printf("%d ", ch);
+				n++;
+				ch = inputData[n];
+			}
 		} else {
-			throw "Cannot open file!";
+			throw "Cannot open input file!";
 		}
 	}
 }
@@ -87,14 +99,15 @@ void IOUtil::outputFile(char* filename, bool isBinaryMode) {
 				outputFile.write(outputData, inputLen);
 				outputFile.close();
 			} else {
-				throw "Cannot open file!";
+				throw "Cannot open output file!";
 			}
 		} else {
 			outputFile.open(filename, ios::out);
 			if (outputFile.is_open()) {
-
+				outputFile << outputData;
+				outputFile.close();
 			} else {
-				throw "Cannot open file!";
+				throw "Cannot open output file!";
 			}
 		}
 }
