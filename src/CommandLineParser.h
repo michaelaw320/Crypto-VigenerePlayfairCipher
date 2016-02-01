@@ -15,20 +15,29 @@
 #include <cstring>
 #include <string>
 
-/* Flag set by Åe--verboseÅf. */
-static int verbose_flag;
+class CommandLineParser {
+public:
 
-static bool ENCRYPT_FLAG = false;
-static bool DECRYPT_FLAG = false;
-static bool BINARY_MODE = false;
-static char* INPUT_FILE;
-static char* OUTPUT_FILE;
-static char* OPT_ALGO;
-static char* OPT_OUTPUT_FORMAT;
-static char* KEY;
+	bool ENCRYPT_FLAG;
+	bool DECRYPT_FLAG;
+	bool BINARY_MODE;
+	char* INPUT_FILE;
+	char* OUTPUT_FILE;
+	char* OPT_ALGO;
+	char* OPT_OUTPUT_FORMAT;
+	char* KEY;
 
-bool PARSE_PARAM(int argc, char **argv);
-bool CHECK_PARAM();
-void PRINT_HELP(char *exeName);
+	const char* OUTPUT_FMT_NORMAL;
+	const char* OUTPUT_FMT_NOSPACE;
+	const char* OUTPUT_FMT_FIVE;
 
+	const char* ALGO_VIG_STD;
+	const char* ALGO_VIG_EXT;
+	const char* ALGO_PLAYFAIR;
+
+	CommandLineParser();
+	bool PARSE_PARAM(int argc, char **argv);
+	bool CHECK_PARAM();
+	void PRINT_HELP(char *exeName);
+};
 #endif /* COMMANDLINEPARSER_H_ */
