@@ -15,9 +15,10 @@ class CipherAlgorithms {
 public:
 	CipherAlgorithms();
 	virtual ~CipherAlgorithms();
-	void setPlainText(char* data);
+	void setPlainText(char* data, int len);
 	char* getCipherText();
 	void expandVigenereKey(char* key);
+	void expandVigenereKeyForBinary(char* key);
 	void generatePlayfairKey(char* key);
 	bool checkInputAlphabetOnly(char* inputData);
 	void encryptVigenereStd();
@@ -28,14 +29,17 @@ public:
 	void decryptPlayfair();
 private:
 	char* plainText;
+	int plainTextLen;
 	char* cipherText;
 	char* expandedKey;
-	char* playfairKey;
+	int expandedKeyLen;
+	char playfairKey[5][5];
 	char SPACE;
 	char CR;
 	char LF;
-	void shiftInputChar(char* inputData);
-	void shiftBackChar();
+	void shiftPlaintextChar();
+	void shiftKeyChar();
+	void shiftBackCipherChar();
 };
 
 #endif /* CIPHERALGORITHMS_H_ */

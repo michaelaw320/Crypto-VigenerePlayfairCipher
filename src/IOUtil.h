@@ -20,10 +20,10 @@ public:
 	char* getInputData();
 	int getInputLen();
 	void setOutputData(char* data);
-	void readFromStdin();
+	void readFromStdin(bool isEncrypt);
 	void readFromFile(char* filename, bool isBinaryMode);
 	void formatOutput(int option);
-	void outputStdout();
+	void outputStdout(bool isEncrypt);
 	void outputFile(char* filename, bool isBinaryMode);
 private:
 	char* inputData;

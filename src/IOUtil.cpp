@@ -10,14 +10,12 @@
 using namespace std;
 
 IOUtil::IOUtil() {
-	// TODO Auto-generated constructor stub
 	inputData = NULL;
 	inputLen = 0;
 	outputData = NULL;
 }
 
 IOUtil::~IOUtil() {
-	// TODO Auto-generated destructor stub
 }
 
 char* IOUtil::getInputData() {
@@ -32,9 +30,10 @@ void IOUtil::setOutputData(char* data) {
 	outputData = data;
 }
 
-void IOUtil::readFromStdin() {
+void IOUtil::readFromStdin(bool isEncrypt) {
 	string input;
-	cout << "Input string to encrypt" << endl;
+	if (isEncrypt) cout << "Input string to encrypt" << endl;
+	else cout << "Input string to decrypt" << endl;
 	cin >> input;
 	inputLen = input.length();
 	inputData = new char[inputLen];
@@ -61,18 +60,17 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 		if (inputFile.is_open()) {
 			streampos size;
 			size = inputFile.tellg();
-			size += 1;
 			inputData = new char[size];
 			inputLen = size;
+			cout << "input len " << inputLen << endl;
 			inputFile.seekg(0, ios::beg);
-			inputFile.get(inputData, size, '\0');
+			inputFile.get(inputData, size+1, '\0');
 			inputFile.close();
 			int n = 0;
 			unsigned char ch = inputData[n];
-			while (ch != '\0') {
-				printf("%d ", ch);
-				n++;
+			for(n=0;n<inputLen;n++) {
 				ch = inputData[n];
+				printf("%d ", ch);
 			}
 			cout << endl;
 		} else {
@@ -112,11 +110,18 @@ void IOUtil::formatOutput(int option) {
 	strcpy(outputData, processing.c_str());
 }
 
-void IOUtil::outputStdout() {
+void IOUtil::outputStdout(bool isEncrypt) {
+	if (isEncrypt) {
 	cout << "Plaintext:" << endl;
 	cout << inputData << endl;
 	cout << "Ciphertext:" << endl;
 	cout << outputData << endl;
+	} else {
+	cout << "Ciphertext:" << endl;
+	cout << inputData << endl;
+	cout << "Plaintext:" << endl;
+	cout << outputData << endl;
+	}
 }
 
 void IOUtil::outputFile(char* filename, bool isBinaryMode) {

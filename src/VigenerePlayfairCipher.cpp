@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
 	//Load data
 	if(stricmp(parser.INPUT_FILE, "stdin") == 0) {
-		utils.readFromStdin();
+		utils.readFromStdin(parser.ENCRYPT_FLAG);
 	} else {
 		try {
 			utils.readFromFile(parser.INPUT_FILE, parser.BINARY_MODE);
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 			return 1;
 		}
 		//Cal vig_std method
-		cipher.setPlainText(utils.getInputData());
+		cipher.setPlainText(utils.getInputData(), utils.getInputLen());
 		cipher.expandVigenereKey(parser.KEY);
 		if (parser.ENCRYPT_FLAG) {
 			cipher.encryptVigenereStd();
@@ -62,8 +62,12 @@ int main(int argc, char **argv) {
 			cipher.decryptVigenereStd();
 		}
 	} else if (stricmp(parser.OPT_ALGO, parser.ALGO_VIG_EXT) == 0) {
-		cipher.setPlainText(utils.getInputData());
-		cipher.expandVigenereKey(parser.KEY);
+		cipher.setPlainText(utils.getInputData(), utils.getInputLen());
+		if(parser.BINARY_MODE) {
+			cipher.expandVigenereKeyForBinary(parser.KEY);
+		} else {
+			cipher.expandVigenereKey(parser.KEY);
+		}
 		if (parser.ENCRYPT_FLAG) {
 			cipher.encryptVigenereExt();
 		}
@@ -75,7 +79,7 @@ int main(int argc, char **argv) {
 			cerr << "Input Error! Only Capital Alphabet is allowed in this mode" << endl;
 			return 1;
 		}
-		cipher.setPlainText(utils.getInputData());
+		cipher.setPlainText(utils.getInputData(), utils.getInputLen());
 		cipher.generatePlayfairKey(parser.KEY);
 		if (parser.ENCRYPT_FLAG) {
 			cipher.encryptPlayfair();
@@ -102,7 +106,7 @@ int main(int argc, char **argv) {
 
 	//Output data
 	if(stricmp(parser.OUTPUT_FILE, "stdout") == 0) {
-		utils.outputStdout();
+		utils.outputStdout(parser.ENCRYPT_FLAG);
 	} else {
 		try {
 			utils.outputFile(parser.OUTPUT_FILE, parser.BINARY_MODE);
