@@ -61,6 +61,7 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 		if (inputFile.is_open()) {
 			streampos size;
 			size = inputFile.tellg();
+			size += 1;
 			inputData = new char[size];
 			inputLen = size;
 			cout << size << endl << endl;
@@ -68,7 +69,7 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 			inputFile.get(inputData, size, '\0');
 			inputFile.close();
 			int n = 0;
-			char ch = inputData[n];
+			unsigned char ch = inputData[n];
 			while (ch != '\0') {
 				printf("%d ", ch);
 				n++;
@@ -80,8 +81,38 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 	}
 }
 
-void IOUtil::formatOutput(char* option) {
-
+void IOUtil::formatOutput(int option) {
+	//option 1 = no space, option 2 = five
+	//Trim spaces, cr, lf
+	string processing = "";
+	cout << outputData << endl;
+	for(unsigned int i = 0; i <= strlen(outputData); i++) {
+		if(outputData[i] == 10 || outputData[i] == 13 || outputData[i] == 32) {
+			//not adding
+		} else {
+			processing += outputData[i];
+		}
+	}
+	cout << processing << endl;
+	if (option == 2) {
+		int count = 0;
+		string processing2 = "";
+		for (unsigned int i=0; i < processing.length(); i++) {
+			if (count == 4) {
+				processing2 += processing[i];
+				processing2 += ' ';
+				count = 0;
+			} else {
+				processing2 += processing[i];
+				count++;
+			}
+		}
+		processing = processing2;
+	}
+	delete[] outputData;
+	outputData = new char[strlen(processing.c_str())];
+	strcpy(outputData, processing.c_str());
+	cout << outputData << endl;
 }
 
 void IOUtil::outputStdout() {

@@ -22,7 +22,7 @@ public:
 	void setOutputData(char* data);
 	void readFromStdin();
 	void readFromFile(char* filename, bool isBinaryMode);
-	void formatOutput(char* option);
+	void formatOutput(int option);
 	void outputStdout();
 	void outputFile(char* filename, bool isBinaryMode);
 private:

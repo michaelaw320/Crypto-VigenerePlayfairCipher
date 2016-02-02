@@ -134,6 +134,7 @@ bool CommandLineParser::CHECK_PARAM() {
 		return false;
 	} else if (BINARY_MODE) {
 		OPT_ALGO = "vig_ext";
+		OPT_OUTPUT_FORMAT = "normal";
 	}
 	return true;
 }

@@ -9,6 +9,9 @@
 
 CipherAlgorithms::CipherAlgorithms() {
 	// TODO Auto-generated constructor stub
+	SPACE = 32;
+	CR = 13;
+	LF = 10;
 
 }
 

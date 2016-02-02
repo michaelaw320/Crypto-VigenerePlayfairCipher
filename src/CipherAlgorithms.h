@@ -14,9 +14,19 @@ public:
 	virtual ~CipherAlgorithms();
 	void setPlainText(char* data);
 	char* getCipherText();
+	void expandVigenereKey(char* key);
+	void generatePlayfairKey(char* key);
+	bool checkInputAlphabetOnly(char* inputData);
 private:
 	char* plainText;
 	char* cipherText;
+	char* expandedKey;
+	char* playfairKey;
+	char SPACE;
+	char CR;
+	char LF;
+	void shiftInputChar(char* inputData);
+	void shiftBackChar();
 };
 
 #endif /* CIPHERALGORITHMS_H_ */
