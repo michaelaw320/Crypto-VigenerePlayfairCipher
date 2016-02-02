@@ -8,6 +8,9 @@
 #ifndef CIPHERALGORITHMS_H_
 #define CIPHERALGORITHMS_H_
 
+#include <cstring>
+#include <iostream>
+
 class CipherAlgorithms {
 public:
 	CipherAlgorithms();
@@ -17,6 +20,12 @@ public:
 	void expandVigenereKey(char* key);
 	void generatePlayfairKey(char* key);
 	bool checkInputAlphabetOnly(char* inputData);
+	void encryptVigenereStd();
+	void encryptVigenereExt();
+	void encryptPlayfair();
+	void decryptVigenereStd();
+	void decryptVigenereExt();
+	void decryptPlayfair();
 private:
 	char* plainText;
 	char* cipherText;

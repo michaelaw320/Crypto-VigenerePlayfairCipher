@@ -64,7 +64,6 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 			size += 1;
 			inputData = new char[size];
 			inputLen = size;
-			cout << size << endl << endl;
 			inputFile.seekg(0, ios::beg);
 			inputFile.get(inputData, size, '\0');
 			inputFile.close();
@@ -75,6 +74,7 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 				n++;
 				ch = inputData[n];
 			}
+			cout << endl;
 		} else {
 			throw "Cannot open input file!";
 		}
@@ -85,7 +85,6 @@ void IOUtil::formatOutput(int option) {
 	//option 1 = no space, option 2 = five
 	//Trim spaces, cr, lf
 	string processing = "";
-	cout << outputData << endl;
 	for(unsigned int i = 0; i <= strlen(outputData); i++) {
 		if(outputData[i] == 10 || outputData[i] == 13 || outputData[i] == 32) {
 			//not adding
@@ -93,7 +92,6 @@ void IOUtil::formatOutput(int option) {
 			processing += outputData[i];
 		}
 	}
-	cout << processing << endl;
 	if (option == 2) {
 		int count = 0;
 		string processing2 = "";
@@ -112,7 +110,6 @@ void IOUtil::formatOutput(int option) {
 	delete[] outputData;
 	outputData = new char[strlen(processing.c_str())];
 	strcpy(outputData, processing.c_str());
-	cout << outputData << endl;
 }
 
 void IOUtil::outputStdout() {

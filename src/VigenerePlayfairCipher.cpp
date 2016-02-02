@@ -42,9 +42,54 @@ int main(int argc, char **argv) {
 		}
 	}
 	//Choose cipher and do encrypt/decrypt
+	//Check key validity
+	if(!cipher.checkInputAlphabetOnly(parser.KEY)){
+		cerr << "KEY Error! Only Capital Alphabet is allowed" << endl;
+		return 1;
+	}
+	if (stricmp(parser.OPT_ALGO, parser.ALGO_VIG_STD) == 0) {
+		if(!cipher.checkInputAlphabetOnly(utils.getInputData())) {
+			cerr << "Input Error! Only Capital Alphabet is allowed in this mode" << endl;
+			return 1;
+		}
+		//Cal vig_std method
+		cipher.setPlainText(utils.getInputData());
+		cipher.expandVigenereKey(parser.KEY);
+		if (parser.ENCRYPT_FLAG) {
+			cipher.encryptVigenereStd();
+		}
+		if (parser.DECRYPT_FLAG) {
+			cipher.decryptVigenereStd();
+		}
+	} else if (stricmp(parser.OPT_ALGO, parser.ALGO_VIG_EXT) == 0) {
+		cipher.setPlainText(utils.getInputData());
+		cipher.expandVigenereKey(parser.KEY);
+		if (parser.ENCRYPT_FLAG) {
+			cipher.encryptVigenereExt();
+		}
+		if (parser.DECRYPT_FLAG) {
+			cipher.decryptVigenereExt();
+		}
+	} else if (stricmp(parser.OPT_ALGO, parser.ALGO_PLAYFAIR) == 0) {
+		if(!cipher.checkInputAlphabetOnly(utils.getInputData())) {
+			cerr << "Input Error! Only Capital Alphabet is allowed in this mode" << endl;
+			return 1;
+		}
+		cipher.setPlainText(utils.getInputData());
+		cipher.generatePlayfairKey(parser.KEY);
+		if (parser.ENCRYPT_FLAG) {
+			cipher.encryptPlayfair();
+		}
+		if (parser.DECRYPT_FLAG) {
+			cipher.decryptPlayfair();
+		}
+	} else {
+		//Mode not recognized, should be error
+		return 1;
+	}
 
 	//Set output data
-	utils.setOutputData(utils.getInputData());
+	utils.setOutputData(cipher.getCipherText());
 
 	//Format output data
 	if(stricmp(parser.OPT_OUTPUT_FORMAT, parser.OUTPUT_FMT_NOSPACE) == 0) {
