@@ -7,6 +7,8 @@
 
 #include "CipherAlgorithms.h"
 
+using namespace std;
+
 CipherAlgorithms::CipherAlgorithms() {
 	SPACE = 32;
 	CR = 13;
@@ -20,6 +22,7 @@ void CipherAlgorithms::setPlainText(char* data, int len) {
 	plainText = new char[len];
 	memcpy(plainText, data, len);
 	plainTextLen = len;
+	plainText[len] = 0;
 }
 
 char* CipherAlgorithms::getCipherText() {
@@ -64,9 +67,6 @@ void CipherAlgorithms::expandVigenereKeyForBinary(char* key) {
 	}
 }
 
-void CipherAlgorithms::generatePlayfairKey(char* key) {
-}
-
 bool CipherAlgorithms::checkInputAlphabetOnly(char* inputData) {
 	char ch;
 	int i=0;
@@ -101,10 +101,6 @@ void CipherAlgorithms::encryptVigenereExt() {
 	cipherText[plainTextLen] = 0;
 }
 
-void CipherAlgorithms::encryptPlayfair() {
-
-}
-
 void CipherAlgorithms::decryptVigenereStd() {
 	cipherText = new char[plainTextLen];
 	int i;
@@ -124,46 +120,87 @@ void CipherAlgorithms::decryptVigenereExt() {
 	cipherText[plainTextLen] = 0;
 }
 
-void CipherAlgorithms::decryptPlayfair() {
+void CipherAlgorithms::playfair(bool encryptFlag) {
+	preprocessPlayfairInput(encryptFlag);
+	int direction;
+	(encryptFlag) ? direction=1 : direction=-1;
+	int a,b,c,d;
+	string nt;
+	for (string::const_iterator ti = playfairProcessed.begin(); ti != playfairProcessed.end(); ti++) {
+		if (getCharPos (*ti++, a, b))
+			if (getCharPos(*ti, c, d)) {
+				if (a == c) {
+					nt += getChar(a,b+direction);
+					nt += getChar(c,d+direction);
+				} else if (b == d) {
+					nt += getChar(a+direction,b);
+					nt += getChar(c+direction,d);
+				} else {
+					nt += getChar(c,b);
+					nt += getChar(a,d);
+				}
+ 			}
+	}
+	playfairProcessed = nt;
+	postprocessPlayfair();
 }
 
-void CipherAlgorithms::shiftPlaintextChar() {
-	int i;
-	for(i=0; i < strlen(plainText); i++) {
-		plainText[i] -= 64;
+void CipherAlgorithms::generatePlayfairKey(char* key) {
+	string k(key);
+	k += "ABCDEFGHIJKLMNOPQRSTUVWZYZ";
+	string nk = "";
+	for (string::iterator si = k.begin(); si != k.end(); si++) {
+		*si = toupper(*si); if (*si < 65 || *si > 90) continue;
+		if (*si == 'J') continue;
+		if (nk.find(*si) == -1) nk += *si;
 	}
-	for(i=0; i < strlen(plainText); i++) {
-			printf("%d ", plainText[i]);
-		}
-	std::cout << std::endl;
+	copy (nk.begin(), nk.end(), &playfairKey[0][0]);
 }
 
-void CipherAlgorithms::shiftKeyChar() {
-	int i;
-	for(i=0; i < expandedKeyLen; i++) {
-		if (expandedKey[i] >= 65 && expandedKey[i] <= 90) {
-			expandedKey[i] -= 64;
-		}
+void CipherAlgorithms::preprocessPlayfairInput(bool encryptFlag) {
+	string t(plainText);
+	for (string::iterator si = t.begin(); si != t.end(); si++) {
+		*si = toupper(*si); if (*si < 65 || *si > 90) continue;
+		if (*si == 'J') *si = 'I';
+		playfairProcessed += *si;
 	}
-
-	for(i=0; i < expandedKeyLen; i++) {
-		printf("%d ", expandedKey[i]);
-	}
-	std::cout << std::endl;
-}
-
-void CipherAlgorithms::shiftBackCipherChar() {
-	int i;
-	for(i=0; i < strlen(cipherText); i++) {
-				printf("%d ", cipherText[i]);
+	if (encryptFlag) {
+		string nt = ""; size_t len = playfairProcessed.length();
+		for (size_t x = 0; x < len; x += 2) {
+			nt += playfairProcessed[x];
+			if (x+1 < len) {
+				if (playfairProcessed[x] == playfairProcessed[x+1]) playfairProcessed += 'Z';
+				nt += playfairProcessed[x+1];
 			}
-		std::cout << std::endl;
-	for(i=0; i < strlen(cipherText); i++) {
-		cipherText[i] += 64;
+		}
+		playfairProcessed = nt;
 	}
-	for(i=0; i < strlen(cipherText); i++) {
-				printf("%d ", cipherText[i]);
+	if (playfairProcessed.length() & 1) playfairProcessed += 'Z';
+}
+
+bool CipherAlgorithms::getCharPos(char l, int& a, int& b) {
+	for (int y=0; y < 5; y++)
+		for (int x=0; x<5; x++)
+			if (playfairKey[y][x] == l) {
+				a = x;
+				b = y;
+				return true;
 			}
-		std::cout << std::endl;
-	std::cout << "Cipher: " << cipherText << std::endl;
+	return false;
+}
+
+char CipherAlgorithms::getChar(int a, int b) {
+	return playfairKey[(b+5)%5][(a+5)%5];
+}
+
+void CipherAlgorithms::postprocessPlayfair() {
+	string output = "";
+	string::iterator si = playfairProcessed.begin();
+	int cnt = 0;
+	while (si != playfairProcessed.end()) {
+		output += *si; si++; output += *si; output += " "; si++;
+		//if (++cnt >= 26) cnt=0;
+	}
+	cipherText = new char[output.length()];
+	strcpy(cipherText, output.c_str());
 }

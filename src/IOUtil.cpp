@@ -34,10 +34,11 @@ void IOUtil::readFromStdin(bool isEncrypt) {
 	string input;
 	if (isEncrypt) cout << "Input string to encrypt" << endl;
 	else cout << "Input string to decrypt" << endl;
-	cin >> input;
+	getline(cin,input);
 	inputLen = input.length();
 	inputData = new char[inputLen];
-	strcpy(inputData, input.c_str());
+	strncpy(inputData, input.c_str(), inputLen);
+	inputData[inputLen] = 0;
 }
 
 void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
@@ -62,17 +63,10 @@ void IOUtil::readFromFile(char* filename, bool isBinaryMode) {
 			size = inputFile.tellg();
 			inputData = new char[size];
 			inputLen = size;
-			cout << "input len " << inputLen << endl;
 			inputFile.seekg(0, ios::beg);
 			inputFile.get(inputData, size+1, '\0');
 			inputFile.close();
 			int n = 0;
-			unsigned char ch = inputData[n];
-			for(n=0;n<inputLen;n++) {
-				ch = inputData[n];
-				printf("%d ", ch);
-			}
-			cout << endl;
 		} else {
 			throw "Cannot open input file!";
 		}

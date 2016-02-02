@@ -43,11 +43,11 @@ int main(int argc, char **argv) {
 	}
 	//Choose cipher and do encrypt/decrypt
 	//Check key validity
-	if(!cipher.checkInputAlphabetOnly(parser.KEY)){
-		cerr << "KEY Error! Only Capital Alphabet is allowed" << endl;
-		return 1;
-	}
 	if (stricmp(parser.OPT_ALGO, parser.ALGO_VIG_STD) == 0) {
+		if(!cipher.checkInputAlphabetOnly(parser.KEY)){
+				cerr << "KEY Error! Only Capital Alphabet is allowed" << endl;
+				return 1;
+		}
 		if(!cipher.checkInputAlphabetOnly(utils.getInputData())) {
 			cerr << "Input Error! Only Capital Alphabet is allowed in this mode" << endl;
 			return 1;
@@ -62,6 +62,10 @@ int main(int argc, char **argv) {
 			cipher.decryptVigenereStd();
 		}
 	} else if (stricmp(parser.OPT_ALGO, parser.ALGO_VIG_EXT) == 0) {
+		if(!cipher.checkInputAlphabetOnly(parser.KEY)){
+				cerr << "KEY Error! Only Capital Alphabet is allowed" << endl;
+				return 1;
+		}
 		cipher.setPlainText(utils.getInputData(), utils.getInputLen());
 		if(parser.BINARY_MODE) {
 			cipher.expandVigenereKeyForBinary(parser.KEY);
@@ -75,17 +79,12 @@ int main(int argc, char **argv) {
 			cipher.decryptVigenereExt();
 		}
 	} else if (stricmp(parser.OPT_ALGO, parser.ALGO_PLAYFAIR) == 0) {
-		if(!cipher.checkInputAlphabetOnly(utils.getInputData())) {
-			cerr << "Input Error! Only Capital Alphabet is allowed in this mode" << endl;
-			return 1;
-		}
 		cipher.setPlainText(utils.getInputData(), utils.getInputLen());
 		cipher.generatePlayfairKey(parser.KEY);
 		if (parser.ENCRYPT_FLAG) {
-			cipher.encryptPlayfair();
-		}
-		if (parser.DECRYPT_FLAG) {
-			cipher.decryptPlayfair();
+			cipher.playfair(parser.ENCRYPT_FLAG);
+		} else {
+			cipher.playfair(parser.ENCRYPT_FLAG);
 		}
 	} else {
 		//Mode not recognized, should be error

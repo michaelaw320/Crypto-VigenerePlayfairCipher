@@ -9,6 +9,7 @@
 #define CIPHERALGORITHMS_H_
 
 #include <cstring>
+#include <string>
 #include <iostream>
 
 class CipherAlgorithms {
@@ -19,14 +20,13 @@ public:
 	char* getCipherText();
 	void expandVigenereKey(char* key);
 	void expandVigenereKeyForBinary(char* key);
-	void generatePlayfairKey(char* key);
 	bool checkInputAlphabetOnly(char* inputData);
 	void encryptVigenereStd();
 	void encryptVigenereExt();
-	void encryptPlayfair();
 	void decryptVigenereStd();
 	void decryptVigenereExt();
-	void decryptPlayfair();
+	void generatePlayfairKey(char* key);
+	void playfair(bool encryptFlag);
 private:
 	char* plainText;
 	int plainTextLen;
@@ -34,12 +34,14 @@ private:
 	char* expandedKey;
 	int expandedKeyLen;
 	char playfairKey[5][5];
+	std::string playfairProcessed;
 	char SPACE;
 	char CR;
 	char LF;
-	void shiftPlaintextChar();
-	void shiftKeyChar();
-	void shiftBackCipherChar();
+	void preprocessPlayfairInput(bool encryptFlag);
+	bool getCharPos( char l, int &a, int &b);
+	char getChar(int a, int b);
+	void postprocessPlayfair();
 };
 
 #endif /* CIPHERALGORITHMS_H_ */
